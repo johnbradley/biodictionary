@@ -1,0 +1,97 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="definition-list">
+  <template>
+    <style>
+      .item {
+        padding: 10px;
+        background-color: white;
+        cursor: pointer;
+      }
+      .item:nth-child(even) {
+        background: var(--light-primary-color);
+      }
+      .item:nth-child(odd) {
+        background: var(--my-toolbar-title-color);
+      }
+      .item:focus {
+        outline: 0;
+        border-color: #666;
+      }
+      .listframe {
+        padding: 10px;
+        margin: 16px 16px 0 16px;
+      }
+      .searchframe {
+        margin: 16px 16px 0 16px;
+        padding: 10px;
+        border-radius: 8px;
+
+      }
+    </style>
+    <firebase-collection
+          id="projectscollection"
+          order-by-child="height"
+          location="https://biodictionary.firebaseio.com/definitions"
+          data="{{definitions}}"></firebase-collection>
+    <div class="layout horizontal wrap">
+      <div class="flex listframe">
+        <h2>Terms<paper-icon-button icon="add-circle" on-tap="addItem" ></paper-icon-button></h2>
+        <template id="deflist" is="dom-repeat" items="{{definitions}}" filter="shouldPull">
+          <div class="item" on-tap="editItem">
+              <span class="paper-font-body2">{{item.term}}</span>
+              <span> - </span>
+              <span class="paper-font-body1">{{item.text}}</span>
+          </div>
+        </template>
+      </div>
+      <paper-material class="searchframe">
+        <h3> Search</h2>
+        <paper-input type="search" value="{{filterText::input}}"
+          placeholder=" " autosave="test" results="5">
+        </paper-input>
+      </paper-material>
+    </div>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'definition-list',
+        properties: {
+          items: {
+            type: Array,
+            notify: true,
+          },
+          filterText: {
+            value: '',
+            observer: '_refreshFilter'
+          },
+        },
+        shouldPull: function(item) {
+          if (this.filterText) {
+              return (item.term.indexOf(this.filterText) > -1) &&
+              (item.text.indexOf(this.filterText) > -1);
+          }
+          return true;
+        },
+        addItem: function() {
+          page('new');
+        },
+        editItem: function(val) {
+          page('/edit/' + val.model.item.__firebaseKey__);
+        },
+        _refreshFilter: function() {
+          this.$.deflist.render();
+        },
+        ready: function() {
+          //var definitions = new Firebase('https://biodictionary.firebaseio.com/definitions');
+          //definitions.push({ 'term': 'Protein', 'text': 'Molecule of amino acid residue chains.' });
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

@@ -1,0 +1,27 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="home-button">
+  <template>
+    <paper-icon-button icon="list" on-tap="goHome"></paper-icon-button>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'home-button',
+        properties: {
+          items: {
+            type: Array,
+            notify: true,
+          }
+        },
+        goHome: function() {
+          page('/');
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
