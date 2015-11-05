@@ -14,8 +14,8 @@
       <h2>Edit Definition</h2>
       <paper-input label="Term" value="{{term}}"></paper-input>
       <paper-input label="Text" value="{{text}}"></paper-input>
-      <paper-button on-tap="_save_term" disabled="{{!cansave}}" raised>Save</paper-button>
-      <paper-button on-tap="_delete_item" raised>Delete</paper-button>
+      <paper-button on-tap="_saveTerm" disabled="{{!cansave}}" raised>Save</paper-button>
+      <paper-button on-tap="_deleteItem" raised>Delete</paper-button>
   </template>
 
   <script>
@@ -28,49 +28,49 @@
           term: {
             type: String,
             notify: true,
-            observer: '_value_changed',
+            observer: '_valueChanged',
           },
           text: {
             type: String,
             notify: true,
-            observer: '_value_changed',
+            observer: '_valueChanged',
           },
           cansave: {
             type: Boolean,
             value: false,
           }, key: {
             type: String,
-            observer: '_key_changed',
+            observer: '_keyChanged',
           }
         },
         ready: function() {
             console.log(app.params);
         },
-        _key_changed: function() {
+        _keyChanged: function() {
           var ref = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
           var defedit = this;
-          ref.on("value", function(snapshot) {
+          ref.on('value', function(snapshot) {
             defedit.term = snapshot.val().term;
             defedit.text = snapshot.val().text;
           }, function (errorObject) {
-
+            console.log(errorObject);
           });
         },
-        _value_changed: function() {
-          this.cansave = this._can_save();
+        _valueChanged: function() {
+          this.cansave = this._canSave();
         },
-        _can_save: function() {
+        _canSave: function() {
           return this.text && this.term;
         },
-        _delete_item: function() {
+        _deleteItem: function() {
           if (this.key) {
             var def = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
             def.remove();
           }
           page('/');
         },
-        _save_term: function() {
-          if( this._can_save()) {
+        _saveTerm: function() {
+          if( this._canSave()) {
             if (this.key) {
               var def = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
               def.update({ 'term': this.term, 'text': this.text});
