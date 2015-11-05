@@ -72,7 +72,7 @@
         },
         shouldPull: function(item) {
           if (this.filterText) {
-              return (item.term.indexOf(this.filterText) > -1) &&
+              return (item.term.indexOf(this.filterText) > -1) || 
               (item.text.indexOf(this.filterText) > -1);
           }
           return true;
