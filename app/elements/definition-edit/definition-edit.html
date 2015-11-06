@@ -5,17 +5,25 @@
     <style>
       :host {
         display: block;
+        padding: 20px;
+      }
+      .mainframe {
+        max-width: 1024px;
+        margin: 0 auto;
+        width: 100%;
       }
     </style>
     <firebase-document
       id="firedoc"
           location=""
           data="{{definition}}"></firebase-document>
-      <h2>Edit Definition</h2>
-      <paper-input label="Term" value="{{term}}"></paper-input>
-      <paper-input label="Text" value="{{text}}"></paper-input>
-      <paper-button on-tap="_saveTerm" disabled="{{!cansave}}" raised>Save</paper-button>
-      <paper-button on-tap="_deleteItem" raised>Delete</paper-button>
+      <div class="mainframe">
+        <h2>Edit Definition</h2>
+        <paper-input label="Term" value="{{term}}"></paper-input>
+        <paper-input label="Text" value="{{text}}"></paper-input>
+        <paper-button on-tap="_saveTerm" disabled="{{!cansave}}" raised>Save</paper-button>
+        <paper-button on-tap="_deleteItem" raised>Delete</paper-button>
+      </div>
   </template>
 
   <script>
@@ -43,18 +51,20 @@
             observer: '_keyChanged',
           }
         },
-        ready: function() {
-            console.log(app.params);
-        },
         _keyChanged: function() {
-          var ref = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
-          var defedit = this;
-          ref.on('value', function(snapshot) {
-            defedit.term = snapshot.val().term;
-            defedit.text = snapshot.val().text;
-          }, function (errorObject) {
-            console.log(errorObject);
-          });
+          if (!this.key) {
+            this.term = '';
+            this.text = ''  ;
+          } else {
+            var ref = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
+            var defedit = this;
+            ref.on('value', function(snapshot) {
+              defedit.term = snapshot.val().term;
+              defedit.text = snapshot.val().text;
+            }, function (errorObject) {
+              console.log(errorObject);
+            });
+          }
         },
         _valueChanged: function() {
           this.cansave = this._canSave();

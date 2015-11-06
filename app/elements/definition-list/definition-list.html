@@ -21,6 +21,9 @@
       .listframe {
         padding: 10px;
         margin: 16px 16px 0 16px;
+        max-width: 1024px;
+        margin: 0 auto;
+        width: 100%;
       }
       .searchframe {
         margin: 16px 16px 0 16px;
@@ -31,6 +34,9 @@
         width: 200px;
         display: inline-block;
       }
+      .listbody {
+
+      }
     </style>
     <firebase-collection
           id="projectscollection"
@@ -39,10 +45,12 @@
           data="{{definitions}}"></firebase-collection>
     <div class="layout horizontal wrap">
       <div class="flex listframe">
-        <div class="layout horizontal">
+
+        <div class="layout horizontal wrap justified">
+          <div class="layout horizontal wrap">
           <span class="paper-font-headline">Terms</span>
           <paper-icon-button icon="add-circle" on-tap="addItem" ></paper-icon-button>
-          <div class="flex"></div>
+        </div>
           <paper-input class="short" type="search" value="{{filterText::input}}"
             placeholder=" " autosave="test" results="5">
         </div>
