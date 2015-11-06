@@ -26,7 +26,10 @@
         margin: 16px 16px 0 16px;
         padding: 10px;
         border-radius: 8px;
-
+      }
+      paper-input.short {
+        width: 200px;
+        display: inline-block;
       }
     </style>
     <firebase-collection
@@ -36,7 +39,14 @@
           data="{{definitions}}"></firebase-collection>
     <div class="layout horizontal wrap">
       <div class="flex listframe">
-        <h2>Terms<paper-icon-button icon="add-circle" on-tap="addItem" ></paper-icon-button></h2>
+        <div class="layout horizontal">
+          <span class="paper-font-display1">Terms</span>
+          <paper-icon-button icon="add-circle" on-tap="addItem" ></paper-icon-button>
+          <div class="flex"></div>
+          <paper-input class="short" type="search" value="{{filterText::input}}"
+            placeholder=" " autosave="test" results="5">
+        </div>
+        <div class="listbody">
         <template id="deflist" is="dom-repeat" items="{{definitions}}" filter="shouldPull">
           <div class="item" on-tap="editItem">
               <span class="paper-font-body2">{{item.term}}</span>
@@ -45,12 +55,7 @@
           </div>
         </template>
       </div>
-      <paper-material class="searchframe">
-        <h3> Search</h2>
-        <paper-input type="search" value="{{filterText::input}}"
-          placeholder=" " autosave="test" results="5">
-        </paper-input>
-      </paper-material>
+      </div>
     </div>
   </template>
 
@@ -72,8 +77,10 @@
         },
         shouldPull: function(item) {
           if (this.filterText) {
-              return (item.term.indexOf(this.filterText) > -1) || 
-              (item.text.indexOf(this.filterText) > -1);
+              var filterText = this.filterText.toLowerCase();
+              var term = item.term.toLowerCase();
+              var text = item.text.toLowerCase();
+              return (term.indexOf(filterText) > -1) || (text.indexOf(filterText) > -1);
           }
           return true;
         },
