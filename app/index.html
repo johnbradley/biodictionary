@@ -1,13 +1,4 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 
 <html lang="">
 
@@ -60,36 +51,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body unresolved class="fullbleed layout vertical">
+  <template is="dom-bind" id="app">
   <paper-toolbar id="mainToolbar">
-      <home-button></home-button>
-      <div class="middle middle-container center horizontal layout">
-        <div class="app-name">BioDictionary</div>
-      </div>
-      <div class="flex"></div>
-      <a href="https://github.com/johnbradley/biodictionary"><img src="images/GitHub-Mark-32px.png"></a>
+    <home-button></home-button>
+
+    <div class="middle middle-container center horizontal layout">
+      <div class="app-name">BioDictionary</div>
+
+    </div>
+    <div class="flex"></div>
+
+    <ctrl-panel can-edit="{{canedit}}"></ctrl-panel>
 
   </paper-toolbar>
-  <template is="dom-bind" id="app">
-      <iron-pages attr-for-selected="data-route" selected="{{route}}">
-            <section data-route="list">
-                <definition-list></definition-list>
-            </section>
 
-            <section data-route="edit">
-              <definition-edit key$="{{params.name}}"></definition-edit>
-            </section>
 
-            <section data-route="users">
-              <paper-material elevation="1">
-                <h2 class="page-title">Users</h2>
-                <p>This is the users section</p>
-                <a href="/users/Rob">Rob</a>
-              </paper-material>
-            </section>
+    <iron-pages attr-for-selected="data-route" selected="{{route}}">
+      <section data-route="list">
 
-          </iron-pages>
-  </template>
+        <definition-list></definition-list>
+      </section>
 
+      <section data-route="edit">
+        <definition-edit key$="{{params.name}}"></definition-edit>
+      </section>
+
+      <section data-route="login">
+        <login-dialog can-edit="{{canedit}}"></login-dialog>
+      </section>
+
+    </iron-pages>
+    </template >
   <!-- build:js scripts/app.js -->
   <script src="scripts/app.js"></script>
   <!-- endbuild-->

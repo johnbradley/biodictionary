@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="ctrl-panel">
+  <template type="dom-bind">
+    <style>
+      .icon {
+        color: white;
+      }
+      .hidden {
+        dislay: none;
+      }
+    </style>
+
+    <paper-icon-button class="icon" icon="def:github"
+        on-tap="github"></paper-icon-button>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'ctrl-panel',
+        properties: {
+        },
+        github: function() {
+          window.location.href = 'https://github.com/johnbradley/biodictionary';
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

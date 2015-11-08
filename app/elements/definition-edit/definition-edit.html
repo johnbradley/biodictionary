@@ -1,5 +1,4 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
 <dom-module id="definition-edit">
   <template>
     <style>
@@ -12,18 +11,30 @@
         margin: 0 auto;
         width: 100%;
       }
+      paper-dialog.size-position {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 300px;
+        height: 300px;
+        overflow: auto;
+      }
     </style>
     <firebase-document
       id="firedoc"
           location=""
           data="{{definition}}"></firebase-document>
       <div class="mainframe">
-        <h2>Edit Definition</h2>
-        <paper-input label="Term" value="{{term}}"></paper-input>
-        <paper-input label="Text" value="{{text}}"></paper-input>
-        <paper-button on-tap="_saveTerm" disabled="{{!cansave}}" raised>Save</paper-button>
-        <paper-button on-tap="_deleteItem" raised>Delete</paper-button>
+        <h2>Edit Definition<paper-icon-button hidden$="{{canEdit}}" id="login" class="icon" icon="build" on-tap="login"></paper-icon-button></h2>
+        <paper-input readonly="{{!canEdit}}" label="Term" value="{{term}}"></paper-input>
+        <paper-input readonly="{{!canEdit}}" label="Text" value="{{text}}"></paper-input>
+        <paper-button disabled="{{!canEdit}}" on-tap="_saveTerm" disabled="{{!cansave}}" raised>Save</paper-button>
+        <paper-button disabled="{{!canEdit}}" on-tap="_deleteItem" raised>Delete</paper-button>
       </div>
+
+      <login-dialog id="loginDialog" can-edit="{{canEdit}}"></login-dialog>
+
+      <paper-toast id="errorToast" text="{{_errmsg}}"></paper-toast>
   </template>
 
   <script>
@@ -49,14 +60,26 @@
           }, key: {
             type: String,
             observer: '_keyChanged',
-          }
+          },
+          urlBase: {
+            type: String,
+            value: 'https://biodictionary.firebaseio.com/definitions/',
+          },
+          _errmsg: {
+            type: String,
+            value: 'Error'
+          },
+          canEdit: {
+            type: Boolean,
+            value: false,
+          },
         },
         _keyChanged: function() {
           if (!this.key) {
             this.term = '';
             this.text = ''  ;
           } else {
-            var ref = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
+            var ref = new Firebase(this.urlBase + this.key);
             var defedit = this;
             ref.on('value', function(snapshot) {
               defedit.term = snapshot.val().term;
@@ -66,6 +89,9 @@
             });
           }
         },
+        login: function() {
+          this.$.loginDialog.open();
+        },
         _valueChanged: function() {
           this.cansave = this._canSave();
         },
@@ -73,23 +99,42 @@
           return this.text && this.term;
         },
         _deleteItem: function() {
+          var thisthing = this;
+          var onComplete = function(error) {
+            if (error) {
+              thisthing._errmsg = error.message;
+              thisthing.$.errorToast.show();
+            } else {
+              page('/');
+            }
+          };
           if (this.key) {
-            var def = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
-            def.remove();
+            var def = new Firebase(this.urlBase + this.key);
+            def.remove(onComplete);
+          } else {
+            page('/');
           }
-          page('/');
+          //page('/');
         },
         _saveTerm: function() {
-          if( this._canSave()) {
-            if (this.key) {
-              var def = new Firebase('https://biodictionary.firebaseio.com/definitions/' + this.key);
-              def.update({ 'term': this.term, 'text': this.text});
+          var thisthing = this;
+          var onComplete = function(error) {
+            if (error) {
+              thisthing._errmsg = error;
+              thisthing.$.errorToast.show();
             } else {
-              var definitions = new Firebase('https://biodictionary.firebaseio.com/definitions');
-              var fb = definitions.push({ 'term': this.term, 'text': this.text});
-              this.key = fb.key();
+              page('/');
             }
-            page('/');
+          };
+          if( this._canSave()) {
+            var val = { 'term': this.term, 'lcterm': this.term.toLowerCase(), 'text': this.text};
+            if (this.key) {
+              var def = new Firebase(this.urlBase + this.key);
+              def.update(val, onComplete );
+            } else {
+              var definitions = new Firebase(this.urlBase);
+              this.key = definitions.push(val, onComplete);
+            }
           }
         }
       });

@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="login-dialog">
+  <template>
+    <style>
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px;
+    }
+    .short {
+        width: 50vh;
+    }
+    paper-dialog.colored {
+      border-radius: 4px;
+      border: 1px solid grey;
+      background-color: white;
+      color: var(--primary-text-color);
+    }
+    </style>
+    <paper-dialog id="loginDialog" class="colored" modal>
+    <div id="test" class="container">
+        <div>
+        <h2>Enter Login Info</h2>
+        <paper-input class="short" label="Email" value="{{email}}"></paper-input>
+        <paper-input class="short" label="Password" type="password" value="{{password}}"></paper-input>
+        <paper-button class="short" on-tap="_login" raised>Login</paper-button>
+      </div>
+    </div>
+    <paper-toast id="errorToast" text="{{_errmsg}}"></paper-toast>
+    </paper-dialog>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'login-dialog',
+        properties: {
+          canEdit: {
+            type: Boolean,
+            value: false,
+            notify: true
+          }
+        },
+        open: function() {
+          this.$.loginDialog.open();
+        },
+        _login: function() {
+          var thisthing = this;
+          var ref = new Firebase('https://biodictionary.firebaseio.com');
+          ref.authWithPassword({
+            email    : this.email,
+            password : this.password
+          }, function(error) {
+            if (error) {
+              thisthing._errmsg = error.message;
+              thisthing.$.errorToast.show();
+              app.canEdit = false;
+            } else {
+              app.canEdit = true;
+              thisthing.canEdit = true;
+              thisthing.$.loginDialog.close();
+            }
+          }, {
+            remember: 'sessionOnly'
+          });
+          }
+      });
+    })();
+  </script>
+
+</dom-module>

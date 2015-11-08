@@ -29,32 +29,31 @@
         margin: 16px 16px 0 16px;
         padding: 10px;
         border-radius: 8px;
+        vertical-align: top;
       }
       paper-input.short {
         width: 200px;
         display: inline-block;
       }
-      .listbody {
 
-      }
     </style>
     <firebase-collection
           id="projectscollection"
-          order-by-child="height"
+          order-by-child="lcterm"
           location="https://biodictionary.firebaseio.com/definitions"
           data="{{definitions}}"></firebase-collection>
-    <div class="layout horizontal wrap">
-      <div class="flex listframe">
+    <div class="layout vertical wrap">
+      <div class="layout vertical flex listframe">
 
         <div class="layout horizontal wrap justified">
           <div class="layout horizontal wrap">
-          <span class="paper-font-headline">Terms</span>
-          <paper-icon-button icon="add-circle" on-tap="addItem" ></paper-icon-button>
-        </div>
+            <span class="paper-font-headline">Terms</span>
+            <paper-icon-button icon="add-circle" on-tap="addItem" ></paper-icon-button>
+          </div>
           <paper-input class="short" type="search" value="{{filterText::input}}"
             placeholder=" " autosave="test" results="5">
         </div>
-        <div class="listbody">
+        <div>
         <template id="deflist" is="dom-repeat" items="{{definitions}}" filter="shouldPull">
           <div class="item" on-tap="editItem">
               <span class="paper-font-body2">{{item.term}}</span>
@@ -65,6 +64,7 @@
       </div>
       </div>
     </div>
+    <paper-toast id="errorToast" text="{{_errmsg}}"></paper-toast>
   </template>
 
   <script>
@@ -100,10 +100,6 @@
         },
         _refreshFilter: function() {
           this.$.deflist.render();
-        },
-        ready: function() {
-          //var definitions = new Firebase('https://biodictionary.firebaseio.com/definitions');
-          //definitions.push({ 'term': 'Protein', 'text': 'Molecule of amino acid residue chains.' });
         }
       });
     })();
