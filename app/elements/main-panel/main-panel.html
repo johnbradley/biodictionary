@@ -1,0 +1,21 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="main-panel">
+  <style>
+  </style>
+  <template>
+    <login-dialog can-edit="{{canedit}}"></login-dialog>
+    <ctrl-panel can-edit="{{canedit}}"></ctrl-panel>
+  </template>
+
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        is: 'main-panel'
+      });
+    })();
+  </script>
+
+</dom-module>

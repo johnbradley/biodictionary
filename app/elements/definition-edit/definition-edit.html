@@ -25,7 +25,9 @@
           location=""
           data="{{definition}}"></firebase-document>
       <div class="mainframe">
-        <h2>Edit Definition<paper-icon-button hidden$="{{canEdit}}" id="login" class="icon" icon="build" on-tap="login"></paper-icon-button></h2>
+        <h2>Edit Definition
+          <tooltip-icon icon="build" tooltip="Enable editing" hidden$="{{canEdit}}" on-tap="login"></tooltip-icon>
+        </h2>
         <paper-input readonly="{{!canEdit}}" label="Term" value="{{term}}"></paper-input>
         <paper-input readonly="{{!canEdit}}" label="Text" value="{{text}}"></paper-input>
         <paper-button disabled="{{!canEdit}}" on-tap="_saveTerm" disabled="{{!cansave}}" raised>Save</paper-button>

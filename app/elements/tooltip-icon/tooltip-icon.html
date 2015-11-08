@@ -1,0 +1,34 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="tooltip-icon">
+  <style>
+    div {
+      display: inline-block;
+    }
+  </style>
+  <template>
+    <div>
+      <paper-icon-button class="icon" icon="{{icon}}"></paper-icon-button>
+      <paper-tooltip>{{tooltip}}</paper-tooltip>
+    </div>
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      Polymer({
+        is: 'tooltip-icon',
+        properties: {
+          icon: {
+            type: String,
+            value: 'thumb-down',
+          },
+          tooltip: {
+            type: String,
+            value: '',
+          }
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
