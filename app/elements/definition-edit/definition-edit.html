@@ -79,13 +79,20 @@
         _keyChanged: function() {
           if (!this.key) {
             this.term = '';
-            this.text = ''  ;
+            this.text = '';
           } else {
             var ref = new Firebase(this.urlBase + this.key);
             var defedit = this;
             ref.on('value', function(snapshot) {
-              defedit.term = snapshot.val().term;
-              defedit.text = snapshot.val().text;
+              var val = snapshot.val();
+              if (!val) {
+                defedit.term = '';
+                defedit.text = '';
+              } else {
+                defedit.term = val.term;
+                defedit.text = val.text;
+              }
+
             }, function (errorObject) {
               console.log(errorObject);
             });
@@ -107,6 +114,8 @@
               thisthing._errmsg = error.message;
               thisthing.$.errorToast.show();
             } else {
+              thisthing.term = '';
+              thisthing.text = '';
               page('/');
             }
           };
@@ -114,9 +123,10 @@
             var def = new Firebase(this.urlBase + this.key);
             def.remove(onComplete);
           } else {
+            this.term = '';
+            this.text = '';
             page('/');
           }
-          //page('/');
         },
         _saveTerm: function() {
           var thisthing = this;
@@ -125,6 +135,8 @@
               thisthing._errmsg = error;
               thisthing.$.errorToast.show();
             } else {
+              thisthing.term = '';
+              thisthing.text = '';
               page('/');
             }
           };
@@ -135,7 +147,7 @@
               def.update(val, onComplete );
             } else {
               var definitions = new Firebase(this.urlBase);
-              this.key = definitions.push(val, onComplete);
+              definitions.push(val, onComplete);
             }
           }
         }
